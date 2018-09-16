@@ -1,0 +1,11 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ClusterServiceBroker
+metadata:
+  name: osbs
+spec:
+  url: https://1432125f.ngrok.io
+  authInfo:
+    basic:
+      secretRef:
+        name: {{ template "osbpsql.fullname" . }}-auth
+        namespace: {{ .Release.Namespace | quote }}

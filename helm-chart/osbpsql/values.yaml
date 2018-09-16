@@ -1,0 +1,8 @@
+replicaCount: 1
+
+## Basic auth credentials that can later be used to access this broker
+basicAuth:
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  username: username
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  password: password

@@ -3,7 +3,7 @@ kind: ClusterServiceBroker
 metadata:
   name: osbs
 spec:
-  url: https://1432125f.ngrok.io
+  url: https://d623965b.ap.ngrok.io
   authInfo:
     basic:
       secretRef:

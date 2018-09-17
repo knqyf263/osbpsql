@@ -12,8 +12,9 @@ type Service struct {
 	Description string   `json:"description"`
 	Tags        []string `json:"tags"`
 	Requires    []string `json:"requires"`
+	Bindable    bool     `json:"bindable"` // nolint
 	// Metadata        *Metadata        `json:"metadata,omitempty"`
-	PlanUpdateable bool    `json:"plan_updateable,omitempty"` // nolint
+	PlanUpdateable bool    `json:"plan_updateable,omitempty"`
 	Plans          []*Plan `json:"plans"`
 }
 
@@ -23,5 +24,6 @@ type Plan struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	// Metadata    *Metadata `json:"metadata,omitempty"`
-	Free bool `json:"free"`
+	Bindable bool `json:"bindable"`
+	Free     bool `json:"free"`
 }

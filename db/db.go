@@ -6,15 +6,17 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 	"github.com/knqyf263/osbpsql/config"
+	"github.com/pivotal-cf/brokerapi"
 )
 
 type ServiceInstance struct {
-	Id    int64
-	State string
+	ID      string
+	State   brokerapi.LastOperationState
+	Details brokerapi.ProvisionDetails
 }
 
 type ServiceBinding struct {
-	Id    int64
+	Id    string
 	State string
 }
 
@@ -42,12 +44,26 @@ func (m Manager) Migrate() error {
 	return nil
 }
 
+func (m Manager) FindtServiceInstanceById(instanceID string) error {
+	return m.db.Select(&ServiceInstance{ID: instanceID})
+}
+
 func (m Manager) CreateDatabase(dbName string) error {
+	// NOTE: https://github.com/lib/pq/issues/694
 	_, err := m.db.Exec(fmt.Sprintf(`CREATE DATABASE "%s"`, dbName))
 	return err
 }
 
 func (m Manager) DropDatabase(dbName string) error {
+	// NOTE: https://github.com/lib/pq/issues/694
 	_, err := m.db.Exec(fmt.Sprintf(`DROP DATABASE "%s"`, dbName))
 	return err
+}
+
+func (m Manager) CreateServiceInstanceDetails(instanceID string, details brokerapi.ProvisionDetails) error {
+	return m.db.Insert(&ServiceInstance{ID: instanceID, State: brokerapi.InProgress, Details: details})
+}
+
+func (m Manager) UpdateServiceInstanceDetails(instanceID string, state brokerapi.LastOperationState) error {
+	return m.db.Update(&ServiceInstance{ID: instanceID, State: state})
 }

@@ -7,7 +7,8 @@ import (
 	"sync"
 
 	"code.cloudfoundry.org/lager"
-	"github.com/knqyf263/osbpsql/broker"
+	"github.com/knqyf263/osbpsql/brokers"
+	_ "github.com/knqyf263/osbpsql/brokers/psql-db"
 	"github.com/knqyf263/osbpsql/config"
 	_ "github.com/lib/pq"
 	"github.com/pivotal-cf/brokerapi"
@@ -36,7 +37,7 @@ func main() {
 		"username": cfg.Credentials.Username,
 	})
 
-	serviceBroker, err := broker.New(cfg, logger)
+	serviceBroker, err := brokers.New(cfg, logger)
 	if err != nil {
 		logger.Fatal("Error initializing service broker: %s", err)
 	}
@@ -45,18 +46,6 @@ func main() {
 	http.Handle("/", brokerAPI)
 	http.ListenAndServe(":"+cfg.Port, nil)
 }
-
-// func cmdNotFound(c *cli.Context, command string) {
-// 	fmt.Fprintf(
-// 		os.Stderr,
-// 		"%s: '%s' is not a %s command. See '%s --help'\n",
-// 		c.App.Name,
-// 		command,
-// 		c.App.Name,
-// 		c.App.Name,
-// 	)
-// 	os.Exit(1)
-// }
 
 // func run(c *cli.Context) error {
 

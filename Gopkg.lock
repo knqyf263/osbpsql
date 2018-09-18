@@ -2,10 +2,10 @@
 
 
 [[projects]]
+  branch = "master"
   name = "code.cloudfoundry.org/lager"
   packages = ["."]
   revision = "b60e04e119450552243196105bae0d42179ee0ca"
-  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -219,6 +219,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b9b52d4d3efb4992697810d4ee30f44cac305aa1a626aede7b3c307293cfc721"
+  inputs-digest = "dd8002662f10a1f60fb17a01355b7469fc12124914d76f742a57394a7aa1116e"
   solver-name = "gps-cdcl"
   solver-version = 1

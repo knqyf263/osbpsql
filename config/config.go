@@ -1,28 +1,69 @@
 package config
 
 import (
-	cli "gopkg.in/urfave/cli.v2"
+	"log"
+	"strings"
+
+	"github.com/pivotal-cf/brokerapi"
+
+	"github.com/spf13/viper"
 )
 
-type cliConfig struct {
-	BasicAuthUsername string
-	BasicAuthPassword string
+const (
+	cfgFile              = "config.toml"
+	environmentVarPrefix = "osbpsql"
+)
+
+var (
+	propertyToEnvReplacer = strings.NewReplacer(".", "_", "-", "_")
+)
+
+func init() {
+	initConfig()
+	viper.SetEnvPrefix(environmentVarPrefix)
+	viper.SetEnvKeyReplacer(propertyToEnvReplacer)
+	viper.AutomaticEnv()
 }
 
-// Config represetns configurations
-var Config = &cliConfig{}
+func initConfig() {
+	if cfgFile == "" {
+		return
+	}
 
-var Flags = []cli.Flag{
-	&cli.StringFlag{
-		Name:        "basic-auth-username",
-		Usage:       "BASIC auth username",
-		EnvVars:     []string{"BASIC_AUTH_USERNAME"},
-		Destination: &Config.BasicAuthUsername,
-	},
-	&cli.StringFlag{
-		Name:        "basic-auth-password",
-		Usage:       "BASIC auth password",
-		EnvVars:     []string{"BASIC_AUTH_PASSWORD"},
-		Destination: &Config.BasicAuthPassword,
-	},
+	viper.SetConfigFile(cfgFile)
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Can't read config: %v\n", err)
+	}
+}
+
+type BrokerConfig struct {
+	Credentials brokerapi.BrokerCredentials
+	Port        string
+	DB          DBConfig
+}
+
+type DBConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
+}
+
+func NewBrokerConfigFromEnv() *BrokerConfig {
+	return &BrokerConfig{
+		Credentials: brokerapi.BrokerCredentials{
+			Username: viper.GetString("basic_auth.username"),
+			Password: viper.GetString("basic_auth.password"),
+		},
+		Port: viper.GetString("broker.port"),
+		DB: DBConfig{
+			Host:     viper.GetString("db.host"),
+			Port:     viper.GetString("db.port"),
+			User:     viper.GetString("db.user"),
+			Password: viper.GetString("db.password"),
+			Database: viper.GetString("db.database"),
+		},
+	}
 }

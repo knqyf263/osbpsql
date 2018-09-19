@@ -85,7 +85,7 @@ func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID strin
 		"accepts_incomplete": clientSupportsAsync,
 		"details":            details,
 	})
-	err := broker.db.FindtServiceInstanceById(instanceID)
+	err := broker.db.FindServiceInstanceById(instanceID)
 	if err == nil {
 		return brokerapi.ProvisionedServiceSpec{}, brokerapi.ErrInstanceAlreadyExists
 	} else if err != pg.ErrNoRows {
@@ -129,13 +129,17 @@ func (broker *PsqlServiceBroker) Deprovision(ctx context.Context, instanceID str
 // Bind creates an account with credentials to access an instance of a service.
 // It is bound to the `PUT /v2/service_instances/:instance_id/service_bindings/:binding_id` endpoint and can be called using the `cf bind-service` command.
 func (broker *PsqlServiceBroker) Bind(ctx context.Context, instanceID, bindingID string, details brokerapi.BindDetails) (brokerapi.Binding, error) {
-	return brokerapi.Binding{}, nil
+	serviceID := details.ServiceID
+	service := serviceBrokerMap[serviceID]
+	return service.Bind(ctx, instanceID, bindingID, details)
 }
 
 // Unbind destroys an account and credentials with access to an instance of a service.
 // It is bound to the `DELETE /v2/service_instances/:instance_id/service_bindings/:binding_id` endpoint and can be called using the `cf unbind-service` command.
 func (broker *PsqlServiceBroker) Unbind(ctx context.Context, instanceID, bindingID string, details brokerapi.UnbindDetails) error {
-	return nil
+	serviceID := details.ServiceID
+	service := serviceBrokerMap[serviceID]
+	return service.Unbind(ctx, instanceID, bindingID, details)
 }
 
 func (broker *PsqlServiceBroker) LastOperation(ctx context.Context, instanceID, operationData string) (brokerapi.LastOperation, error) {

@@ -44,12 +44,13 @@ func (m Manager) Migrate() error {
 	return nil
 }
 
-func (m Manager) FindtServiceInstanceById(instanceID string) error {
+func (m Manager) FindServiceInstanceById(instanceID string) error {
 	return m.db.Select(&ServiceInstance{ID: instanceID})
 }
 
 func (m Manager) CreateDatabase(dbName string) error {
 	// NOTE: https://github.com/lib/pq/issues/694
+	// dbName is generated automatically
 	_, err := m.db.Exec(fmt.Sprintf(`CREATE DATABASE "%s"`, dbName))
 	return err
 }

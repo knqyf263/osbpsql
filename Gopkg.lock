@@ -57,6 +57,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/jessevdk/go-assets"
+  packages = ["."]
+  revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
+
+[[projects]]
+  branch = "master"
   name = "github.com/jinzhu/inflection"
   packages = ["."]
   revision = "04140366298a54a039076d798123ffa108fff46c"
@@ -219,6 +225,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dd8002662f10a1f60fb17a01355b7469fc12124914d76f742a57394a7aa1116e"
+  inputs-digest = "e745846c9c8c8f6ea5d6b59e681c914f4e448849fe46234952b93d43529257c6"
   solver-name = "gps-cdcl"
   solver-version = 1

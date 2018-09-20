@@ -85,7 +85,7 @@ func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID strin
 		"accepts_incomplete": clientSupportsAsync,
 		"details":            details,
 	})
-	err := broker.db.FindServiceInstanceById(instanceID)
+	_, err := broker.db.FindServiceInstanceByID(instanceID)
 	if err == nil {
 		return brokerapi.ProvisionedServiceSpec{}, brokerapi.ErrInstanceAlreadyExists
 	} else if err != pg.ErrNoRows {
@@ -103,7 +103,7 @@ func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID strin
 		return brokerapi.ProvisionedServiceSpec{}, brokerapi.ErrAsyncRequired
 	}
 
-	if err = broker.db.CreateServiceInstanceDetails(instanceID, details); err != nil {
+	if err = broker.db.CreateServiceInstanceDetails(instanceID, brokerapi.InProgress, details); err != nil {
 		return brokerapi.ProvisionedServiceSpec{}, fmt.Errorf("Error saving instance details to database: %s", err)
 	}
 
@@ -123,6 +123,12 @@ func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID strin
 // It is bound to the `DELETE /v2/service_instances/:instance_id` endpoint and can be called using the `cf delete-service` command.
 func (broker *PsqlServiceBroker) Deprovision(ctx context.Context, instanceID string, details brokerapi.DeprovisionDetails, clientSupportsAsync bool) (brokerapi.DeprovisionServiceSpec, error) {
 	response := brokerapi.DeprovisionServiceSpec{IsAsync: true}
+	_, err := broker.db.FindServiceInstanceByID(instanceID)
+	if err == pg.ErrNoRows {
+		return response, brokerapi.ErrInstanceDoesNotExist
+	} else if err != nil {
+		return response, err
+	}
 	return response, nil
 }
 

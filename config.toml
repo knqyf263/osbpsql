@@ -1,21 +1,21 @@
 [basic_auth]
-# OSB_PSQL_BAIC_AUTH_USERNAME
+# OSBPSQL_PSQL_BAIC_AUTH_USERNAME
 username = "user"
-# OSB_PSQL_BAIC_AUTH_PASSWORD
+# OSBPSQL_PSQL_BAIC_AUTH_PASSWORD
 password = "password"
 
 [broker]
-# OSB_BROKER_PORT
+# OSBPSQL_BROKER_PORT
 port = "8080"
 
 [db]
-# OSB_DB_HOST
+# OSBPSQL_DB_HOST
 host = "localhost"
-# OSB_DB_PORT
+# OSBPSQL_DB_PORT
 port = "5432"
-# OSB_DB_USER
+# OSBPSQL_DB_USER
 user = "postgres"
-# OSB_DB_PASSWORD
+# OSBPSQL_DB_PASSWORD
 password = "postgres"
-# OSB_DB_DATABASE
+# OSBPSQL_DB_DATABASE
 database = "postgres"

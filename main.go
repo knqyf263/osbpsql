@@ -20,7 +20,6 @@ func main() {
 
 	cfg := config.NewBrokerConfigFromEnv()
 
-	// init api
 	logger.Info("Serving", lager.Data{
 		"port":     cfg.Port,
 		"username": cfg.Credentials.Username,

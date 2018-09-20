@@ -1,5 +1,13 @@
 replicaCount: 1
 
+image:
+  ## Image location, NOT including the tag
+  repository: nginx
+  ## Image tag
+  tag: latest
+  ## "IfNotPresent", "Always", or "Never"
+  pullPolicy: IfNotPresent
+
 ## Basic auth credentials that can later be used to access this broker
 basicAuth:
   ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION

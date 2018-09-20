@@ -2,6 +2,7 @@ apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ClusterServiceBroker
 metadata:
   name: osbs
+  namespace: default
 spec:
   url: https://94905ffa.ap.ngrok.io
   authInfo:

@@ -9,7 +9,7 @@ metadata:
   displayname: "PostgreSQL User"
   documentationurl: https://github.com/knqyf263/osbpsql
 plans: 
-  - id: 4cbdb95c-26a2-4968-aef1-a392ea23debc
+  - id: "4cbdb95c-26a2-4968-aef1-a392ea23debc"
     name: standard
     description: Standard
     free: true

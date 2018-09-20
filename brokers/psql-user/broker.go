@@ -21,8 +21,8 @@ var (
 
 // Binding is the struct of ServiceBinding
 type Binding struct {
-	UserName string
-	Password string
+	UserName string `json:"username"`
+	Password string `json:"password"`
 }
 
 func init() {

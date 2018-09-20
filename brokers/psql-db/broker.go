@@ -21,7 +21,7 @@ var (
 
 // Binding is the struct of ServiceBinding
 type Binding struct {
-	DBName string
+	DBName string `json:"db_name"`
 }
 
 func init() {

@@ -1,0 +1,9 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
+metadata:
+  name: test-postgresql-user-binding
+  namespace: default
+spec:
+  instanceRef:
+    name: test-postgresql-user
+  secretName: test-postgresql-user-secret

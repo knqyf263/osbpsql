@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pivotal-cf/brokerapi"
 	"github.com/pkg/errors"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/knqyf263/osbpsql/brokers"
 	"github.com/knqyf263/osbpsql/db"
 	"github.com/knqyf263/osbpsql/util"
-	"github.com/pivotal-cf/brokerapi"
-	yaml "gopkg.in/yaml.v2"
 )
 
 //go:generate go-assets-builder -p psqluser -o definition.go definition.yaml

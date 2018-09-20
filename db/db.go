@@ -5,8 +5,9 @@ import (
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
-	"github.com/knqyf263/osbpsql/config"
 	"github.com/pivotal-cf/brokerapi"
+
+	"github.com/knqyf263/osbpsql/config"
 )
 
 // ServiceInstance represents ServiceInstance

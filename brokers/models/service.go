@@ -3,8 +3,9 @@ package models
 import (
 	"context"
 
-	"github.com/knqyf263/osbpsql/db"
 	"github.com/pivotal-cf/brokerapi"
+
+	"github.com/knqyf263/osbpsql/db"
 )
 
 // ServiceBroker : ServiceBroker

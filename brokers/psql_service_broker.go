@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
-
 	"code.cloudfoundry.org/lager"
 	"github.com/go-pg/pg"
+	"github.com/pivotal-cf/brokerapi"
+	"github.com/pkg/errors"
+
 	"github.com/knqyf263/osbpsql/brokers/models"
 	"github.com/knqyf263/osbpsql/config"
 	"github.com/knqyf263/osbpsql/db"
-	"github.com/pivotal-cf/brokerapi"
 )
 
 var (

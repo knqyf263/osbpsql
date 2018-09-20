@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/pivotal-cf/brokerapi"
-
 	"github.com/spf13/viper"
 )
 

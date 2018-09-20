@@ -1,0 +1,16 @@
+id: "6cb6dbdb-e4d2-4e37-aa91-48529a4e18b4"
+name: "psql-database"
+description: "Create database"
+bindable: true
+tags: 
+  - postgresql
+planupdatable: false
+metadata: 
+  displayname: "PostgreSQL Database"
+  documentationurl: https://github.com/knqyf263/osbpsql
+plans: 
+  - id: "53296ba3-38e6-4a49-acf4-c0cd75a88a91"
+    name: standard
+    description: Standard
+    free: true
+    bindable: true

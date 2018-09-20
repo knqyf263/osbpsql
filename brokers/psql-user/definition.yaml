@@ -1,0 +1,16 @@
+id: "17cfc1d5-a2ef-47bb-b3c2-b3fe07cb5b41"
+name: "psql-user"
+description: "Create user"
+bindable: true
+tags: 
+  - postgresql
+planupdatable: false
+metadata: 
+  displayname: "PostgreSQL User"
+  documentationurl: https://github.com/knqyf263/osbpsql
+plans: 
+  - id: "4cbdb95c-26a2-4968-aef1-a392ea23debc"
+    name: standard
+    description: Standard
+    free: true
+    bindable: true

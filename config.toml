@@ -1,0 +1,21 @@
+[basic_auth]
+# OSBPSQL_PSQL_BAIC_AUTH_USERNAME
+username = "user"
+# OSBPSQL_PSQL_BAIC_AUTH_PASSWORD
+password = "password"
+
+[broker]
+# OSBPSQL_BROKER_PORT
+port = "8080"
+
+[db]
+# OSBPSQL_DB_HOST
+host = "localhost"
+# OSBPSQL_DB_PORT
+port = "5432"
+# OSBPSQL_DB_USER
+user = "postgres"
+# OSBPSQL_DB_PASSWORD
+password = "postgres"
+# OSBPSQL_DB_DATABASE
+database = "postgres"

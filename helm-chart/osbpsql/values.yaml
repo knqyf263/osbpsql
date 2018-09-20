@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  ## Image location, NOT including the tag
+  repository: knqyf263/osbpsql
+  ## Image tag
+  tag: latest
+  ## "IfNotPresent", "Always", or "Never"
+  pullPolicy: IfNotPresent
+
+## Basic auth credentials that can later be used to access this broker
+basicAuth:
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  username: username
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  password: password
+
+db:
+  host: localhost
+  port: "5432"
+  user: postgres
+  password: postgres
+  database: postgres

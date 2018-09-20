@@ -1,0 +1,12 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ClusterServiceBroker
+metadata:
+  name: osbpsql
+  namespace: default
+spec:
+  url: {{ template "osbpsql.fullname" . }}-osbpsql
+  authInfo:
+    basic:
+      secretRef:
+        name: {{ template "osbpsql.fullname" . }}-auth
+        namespace: {{ .Release.Namespace | quote }}

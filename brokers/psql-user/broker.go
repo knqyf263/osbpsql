@@ -1,4 +1,4 @@
-package psqldb
+package psqluser
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-//go:generate go-assets-builder -p psqldb -o definition.go definition.yaml
+//go:generate go-assets-builder -p psqluser -o definition.go definition.yaml
 
 var (
 	bindingMap = map[string]Binding{}
@@ -21,7 +21,8 @@ var (
 
 // Binding is the struct of ServiceBinding
 type Binding struct {
-	DBName string
+	UserName string
+	Password string
 }
 
 func init() {
@@ -48,21 +49,22 @@ func (b *Broker) SetDB(db *db.Manager) {
 	b.db = db
 }
 
-// Provision creates database automatically
+// Provision creates user automatically
 func (b *Broker) Provision(instanceID string, details brokerapi.ProvisionDetails) error {
-	dbName := util.RandLowerString(20)
-	bindingMap[instanceID] = Binding{DBName: dbName}
-	return b.db.CreateDatabaseG(dbName)
+	username := util.RandLowerString(20)
+	password := util.RandLowerString(20)
+	bindingMap[instanceID] = Binding{UserName: username, Password: password}
+	return b.db.CreateSuperUser(username, password)
 }
 
-// Deprovision drops database
+// Deprovision drops user
 func (b *Broker) Deprovision(ctx context.Context, instanceID string, details brokerapi.DeprovisionDetails) error {
 	binding, ok := bindingMap[instanceID]
 	if !ok {
 		return fmt.Errorf("Unknown instance id: %s", instanceID)
 	}
 
-	err := b.db.DropDatabaseG(binding.DBName)
+	err := b.db.DropSuperUser(binding.UserName)
 	if err != nil {
 		return errors.Wrap(err, "Unexpected DB error")
 	}
@@ -71,7 +73,7 @@ func (b *Broker) Deprovision(ctx context.Context, instanceID string, details bro
 	return nil
 }
 
-// Bind returns database name
+// Bind returns username and password
 func (b *Broker) Bind(ctx context.Context, instanceID, bindingID string, details brokerapi.BindDetails) (brokerapi.Binding, error) {
 	binding, ok := bindingMap[instanceID]
 	if !ok {

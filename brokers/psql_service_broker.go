@@ -2,8 +2,9 @@ package brokers
 
 import (
 	"context"
-	"errors"
 	"fmt"
+
+	"github.com/pkg/errors"
 
 	"code.cloudfoundry.org/lager"
 	"github.com/go-pg/pg"
@@ -80,6 +81,11 @@ func (broker *PsqlServiceBroker) getPlanFromID(serviceID, planID string) error {
 // Provision creates a new instance of a service.
 // It is bound to the `PUT /v2/service_instances/:instance_id` endpoint and can be called using the `cf create-service` command.
 func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID string, details brokerapi.ProvisionDetails, clientSupportsAsync bool) (brokerapi.ProvisionedServiceSpec, error) {
+	// Only support assync
+	if !clientSupportsAsync {
+		return brokerapi.ProvisionedServiceSpec{}, brokerapi.ErrAsyncRequired
+	}
+
 	broker.Logger.Info("Provisioning", lager.Data{
 		"instanceId":         instanceID,
 		"accepts_incomplete": clientSupportsAsync,
@@ -96,11 +102,6 @@ func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID strin
 	err = broker.getPlanFromID(serviceID, details.PlanID)
 	if err != nil {
 		return brokerapi.ProvisionedServiceSpec{}, err
-	}
-
-	// Only support assync
-	if !clientSupportsAsync {
-		return brokerapi.ProvisionedServiceSpec{}, brokerapi.ErrAsyncRequired
 	}
 
 	if err = broker.db.CreateServiceInstanceDetails(instanceID, brokerapi.InProgress, details); err != nil {
@@ -123,33 +124,86 @@ func (broker *PsqlServiceBroker) Provision(ctx context.Context, instanceID strin
 // It is bound to the `DELETE /v2/service_instances/:instance_id` endpoint and can be called using the `cf delete-service` command.
 func (broker *PsqlServiceBroker) Deprovision(ctx context.Context, instanceID string, details brokerapi.DeprovisionDetails, clientSupportsAsync bool) (brokerapi.DeprovisionServiceSpec, error) {
 	response := brokerapi.DeprovisionServiceSpec{IsAsync: true}
+
+	// Only support assync
+	if !clientSupportsAsync {
+		return response, brokerapi.ErrAsyncRequired
+	}
+
 	_, err := broker.db.FindServiceInstanceByID(instanceID)
 	if err == pg.ErrNoRows {
 		return response, brokerapi.ErrInstanceDoesNotExist
 	} else if err != nil {
 		return response, err
 	}
+
+	service := serviceBrokerMap[details.ServiceID]
+	go func() {
+		if err = service.Deprovision(ctx, instanceID, details); err != nil {
+			broker.db.UpdateServiceInstanceDetails(instanceID, brokerapi.Failed)
+			return
+		}
+
+		if err = broker.db.DeleteServiceInstanceDetailsG(instanceID); err != nil {
+			return
+		}
+
+		_, err := broker.db.FindServiceBindingByID(instanceID)
+		if err == nil {
+			broker.db.DeleteServiceBindingDetailsG(instanceID)
+		}
+	}()
+
 	return response, nil
 }
 
 // Bind creates an account with credentials to access an instance of a service.
 // It is bound to the `PUT /v2/service_instances/:instance_id/service_bindings/:binding_id` endpoint and can be called using the `cf bind-service` command.
 func (broker *PsqlServiceBroker) Bind(ctx context.Context, instanceID, bindingID string, details brokerapi.BindDetails) (brokerapi.Binding, error) {
-	serviceID := details.ServiceID
-	service := serviceBrokerMap[serviceID]
-	return service.Bind(ctx, instanceID, bindingID, details)
+	_, err := broker.db.FindServiceBindingByID(instanceID)
+	if err == nil {
+		return brokerapi.Binding{}, brokerapi.ErrBindingAlreadyExists
+	} else if err != pg.ErrNoRows {
+		return brokerapi.Binding{}, errors.Wrap(err, "Unexpected DB error")
+	}
+
+	service := serviceBrokerMap[details.ServiceID]
+	binding, err := service.Bind(ctx, instanceID, bindingID, details)
+	if err != nil {
+		return brokerapi.Binding{}, errors.Wrap(err, "Failed to create ServiceBinding")
+	}
+	if err = broker.db.CreateServiceBindingDetails(instanceID, brokerapi.Succeeded, details); err != nil {
+		return brokerapi.Binding{}, errors.Wrap(err, "Failed to save ServiceBinding details to DB")
+	}
+	return binding, nil
 }
 
 // Unbind destroys an account and credentials with access to an instance of a service.
 // It is bound to the `DELETE /v2/service_instances/:instance_id/service_bindings/:binding_id` endpoint and can be called using the `cf unbind-service` command.
 func (broker *PsqlServiceBroker) Unbind(ctx context.Context, instanceID, bindingID string, details brokerapi.UnbindDetails) error {
-	serviceID := details.ServiceID
-	service := serviceBrokerMap[serviceID]
-	return service.Unbind(ctx, instanceID, bindingID, details)
+	_, err := broker.db.FindServiceBindingByID(instanceID)
+	if err == pg.ErrNoRows {
+		return brokerapi.ErrBindingDoesNotExist
+	} else if err != nil {
+		return errors.Wrap(err, "Unexpected DB error")
+	}
+
+	service := serviceBrokerMap[details.ServiceID]
+	if err := service.Unbind(ctx, instanceID, bindingID, details); err != nil {
+
+	}
+	return broker.db.DeleteServiceBindingDetailsG(instanceID)
 }
 
+// LastOperation returns the state of the last requested operation.
 func (broker *PsqlServiceBroker) LastOperation(ctx context.Context, instanceID, operationData string) (brokerapi.LastOperation, error) {
-	return brokerapi.LastOperation{State: brokerapi.InProgress}, nil
+	serviceInstance, err := broker.db.FindServiceInstanceByID(instanceID)
+	if err == pg.ErrNoRows {
+		return brokerapi.LastOperation{}, brokerapi.ErrInstanceDoesNotExist
+	} else if err != nil {
+		return brokerapi.LastOperation{}, err
+	}
+	return brokerapi.LastOperation{State: serviceInstance.State}, nil
 }
 
 // Update a service instance plan.

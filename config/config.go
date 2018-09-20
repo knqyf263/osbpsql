@@ -37,12 +37,14 @@ func initConfig() {
 	}
 }
 
+// BrokerConfig is the configurations for ServiceBroker
 type BrokerConfig struct {
 	Credentials brokerapi.BrokerCredentials
 	Port        string
 	DB          DBConfig
 }
 
+// DBConfig is the configurations for PostgreSQL
 type DBConfig struct {
 	Host     string
 	Port     string
@@ -51,6 +53,7 @@ type DBConfig struct {
 	Database string
 }
 
+// NewBrokerConfigFromEnv returns BrokerConfig from environment variables
 func NewBrokerConfigFromEnv() *BrokerConfig {
 	return &BrokerConfig{
 		Credentials: brokerapi.BrokerCredentials{

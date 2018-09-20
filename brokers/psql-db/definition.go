@@ -13,7 +13,7 @@ var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"definition.
 	"/": &assets.File{
 		Path:     "/",
 		FileMode: 0x800001ed,
-		Mtime:    time.Unix(1537283485, 1537283485000000000),
+		Mtime:    time.Unix(1537442790, 1537442790000000000),
 		Data:     nil,
 	}, "/definition.yaml": &assets.File{
 		Path:     "/definition.yaml",

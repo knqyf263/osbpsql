@@ -38,7 +38,7 @@ Next, install from the osbpsql repo:
 
 ```
 $ export DB_HOST=[YOUR POSTGRESQL HOST]
-$ export DB_PORT=5432
+$ export DB_PORT=:5432
 $ export DB_USER=postgres
 $ export DB_PASSWORD=postgres
 $ export DB_DATABASE=postgres
@@ -71,7 +71,7 @@ Broker for PostgreSQL chart and their default values.
 | `basicAuth.username`        | Specifies the basic auth username that clients (e.g. the Kubernetes Service Catalog) must use when connecting to OSBA. | `"username"`; __Do not use this default value in production!__ |
 | `basicAuth.password`        | Specifies the basic auth password that clients (e.g. the Kubernetes Service Catalog) must use when connecting to OSBA. | `"password"`; __Do not use this default value in production!__ |
 | `db.host`        | Database hostname | `"localhost"` |
-| `db.port`        | Database port | `"5432"` |
+| `db.port`        | Database port | `":5432"` |
 | `db.username`        | Database username | `"postgres"` |
 | `db.password`        | Database password | `"postgres"` |
 | `db.database`        | Database name | `"postgres"` |

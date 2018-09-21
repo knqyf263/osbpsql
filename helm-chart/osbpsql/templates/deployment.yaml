@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "osbpsql.fullname" . }}-osbpsql
+  namespace: default
+  labels:
+    app: {{ template "osbpsql.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "osbpsql.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Always
+      containers:
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          name: {{ template "osbpsql.fullname" . }}-osbpsql
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ template "osbpsql.fullname" . }}-secret
+              prefix: OSBPSQL_

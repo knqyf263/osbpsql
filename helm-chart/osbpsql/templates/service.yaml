@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "osbpsql.fullname" . }}-osbpsql
-  namespace: default
+  namespace: {{ .Release.Namespace | quote }}
   labels:
    app: {{ template "osbpsql.fullname" . }}
    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

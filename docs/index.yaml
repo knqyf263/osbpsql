@@ -3,11 +3,11 @@ entries:
   osbpsql:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2018-09-21T00:21:16.862044036+09:00
+    created: 2018-09-21T09:39:21.318550414+09:00
     description: A Helm chart for Kubernetes
-    digest: 7b4ff1e120ceb8ba70fa286e8bd9c633990daade37deb21abbf5a171f951aa12
+    digest: edcc4a467b8138588146c4a5ef95041212cf6ab26e180c0d408b90f367363b90
     name: osbpsql
     urls:
     - osbpsql-0.1.0.tgz
     version: 0.1.0
-generated: 2018-09-21T00:21:16.861741306+09:00
+generated: 2018-09-21T09:39:21.316708694+09:00
